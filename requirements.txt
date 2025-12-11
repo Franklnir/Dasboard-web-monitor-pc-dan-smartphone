@@ -1,0 +1,7 @@
+flask
+paho-mqtt
+pymysql
+requests
+psutil
+wmi
+pywin32

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device Monitoring Dashboard - PC & HP</title>
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}"
+  />
+
+  <!-- Leaflet CSS untuk Maps -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🖥📱 Device Monitoring Dashboard</h1>
+      <p>
+        Real-time monitoring untuk laptop & smartphone.
+        Data PC disimpan ke MySQL, data HP diambil dari Firebase Realtime Database.
+      </p>
+    </header>
+
+    <div class="mode-toggle-wrapper">
+      <div class="mode-toggle">
+        <button id="btnModePc" class="mode-btn active">
+          <span>💻</span>
+          <span>Monitor PC</span>
+        </button>
+        <button id="btnModeHp" class="mode-btn">
+          <span>📱</span>
+          <span>Monitor HP</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============ PC SECTION ============ -->
+    <section id="pc-section">
+      <div id="devicesContainer" class="devices-container"></div>
+
+      <div class="last-update-bar">
+        🔄 Last Update: <span id="lastUpdateTime">--:--:--</span> ·
+        📊 Auto-refresh PC data setiap 2 detik
+      </div>
+    </section>
+
+    <!-- ============ HP SECTION ============ -->
+    <section id="hp-section">
+      <div class="hp-layout">
+        <div class="hp-card">
+          <div class="hp-card-header">
+            <div class="hp-title">
+              <span>📱</span>
+              <span>Smartphone Status</span>
+            </div>
+            <div class="hp-meta">
+              <div id="hp-last-time">Last update: -</div>
+              <div id="hp-last-timestamp"></div>
+            </div>
+          </div>
+
+          <!-- status utama -->
+          <div class="hp-metrics-grid">
+            <div class="hp-metric">
+              <div class="hp-metric-label">Battery</div>
+              <div class="hp-metric-value" id="hp-battery">-</div>
+            </div>
+            <div class="hp-metric">
+              <div class="hp-metric-label">Status</div>
+              <div class="hp-metric-value" id="hp-charging">-</div>
+            </div>
+            <div class="hp-metric">
+              <div class="hp-metric-label">WiFi SSID</div>
+              <div class="hp-metric-value" id="hp-wifi">-</div>
+            </div>
+            <div class="hp-metric">
+              <div class="hp-metric-label">Network Type</div>
+              <div class="hp-metric-value" id="hp-network">-</div>
+            </div>
+            <div class="hp-metric">
+              <div class="hp-metric-label">Device Temp</div>
+              <div class="hp-metric-value" id="hp-device-temp">-</div>
+            </div>
+            <div class="hp-metric">
+              <div class="hp-metric-label">WiFi Speed</div>
+              <div class="hp-metric-value" id="hp-wifi-speed">-</div>
+            </div>
+            <div class="hp-metric">
+              <div class="hp-metric-label">IP Address</div>
+              <div class="hp-metric-value" id="hp-ip">-</div>
+            </div>
+          </div>
+
+          <!-- detail device -->
+          <div class="hp-detail-list">
+            <div class="hp-detail-row">
+              <span class="hp-detail-label">Android</span>
+              <span class="hp-detail-value" id="hp-android">-</span>
+            </div>
+            <div class="hp-detail-row">
+              <span class="hp-detail-label">Brand / Model</span>
+              <span class="hp-detail-value" id="hp-brand-model">-</span>
+            </div>
+            <div class="hp-detail-row">
+              <span class="hp-detail-label">Chipset</span>
+              <span class="hp-detail-value" id="hp-chipset">-</span>
+            </div>
+            <div class="hp-detail-row">
+              <span class="hp-detail-label">RAM</span>
+              <span class="hp-detail-value" id="hp-ram">-</span>
+            </div>
+            <div class="hp-detail-row">
+              <span class="hp-detail-label">Storage</span>
+              <span class="hp-detail-value" id="hp-storage">-</span>
+            </div>
+          </div>
+
+          <div class="hp-location-text">
+            📍 Lokasi:
+            <span id="hp-location-text">Belum ada data lokasi...</span>
+          </div>
+          <div class="hp-location-text">
+            🎯 Akurasi:
+            <span id="hp-accuracy">-</span>
+          </div>
+
+          <div style="margin-top: 10px">
+            <span id="hp-online-pill" class="hp-status-pill offline">
+              🔴 Tidak ada data
+            </span>
+          </div>
+
+          <div id="hp-error" class="hp-error" style="display: none"></div>
+        </div>
+
+        <div id="hp-map"></div>
+      </div>
+
+      <div class="last-update-bar" style="margin-top: 16px">
+        🔄 HP data di-refresh setiap 5 detik dari Firebase (latest_info)
+      </div>
+    </section>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
